@@ -4,8 +4,10 @@ const router = express.Router();
 const Timing = require("../models/ShowTiming");
 const Audi = require("../models/Audi");
 const Movies = require("../models/Movies");
+const auth = require("../middleware/auth");
+const admin = require("../middleware/admin");
 
-router.post("/timing/:id", async (req, res) => {
+router.post("/timing/:id", auth, admin, async (req, res) => {
   try {
     const movieId = req.params.id;
     const audi = (await Audi.find({ name: req.body.audi }))[0];
@@ -49,7 +51,7 @@ router.post("/timing/:id", async (req, res) => {
   }
 });
 
-router.get("/timing/audi", async (req, res) => {
+router.get("/timing/audi", auth, admin, async (req, res) => {
   // Check for the avaialblity of the Audi
   try {
     const audi = (await Audi.find({ name: req.body.audi }))[0];
@@ -78,7 +80,7 @@ router.get("/timing/audi", async (req, res) => {
   }
 });
 
-router.get("/timing/movies/:id", async (req, res) => {
+router.get("/timing/movies/:id", auth, admin, async (req, res) => {
   const movieId = req.params.id;
   const movies = await Timing.find({ movie: movieId, date: req.body.date })
     .populate("movie audi")
